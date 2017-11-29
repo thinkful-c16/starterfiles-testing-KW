@@ -78,6 +78,25 @@ describe('Blog Posts API resource', function() {
           res.body.should.have.lengthOf(count);
         });
     });
+
+    it('should return blog posts with the correct fields', function() {
+      let resPost;
+      return chai.request(app)
+        .get('/posts')
+        .then(function(res) {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.be.a('array');
+          res.body.should.have.lengthOf.at.least(1);
+
+          res.body.forEach(function(post) {
+            post.should.be.a('object');
+            post.should.include.keys(
+              'id', 'title', 'content', 'author', 'created');
+
+          });
+        });
+    });
   });
 });
 
