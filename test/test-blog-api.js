@@ -93,12 +93,23 @@ describe('Blog Posts API resource', function() {
             post.should.be.a('object');
             post.should.include.keys(
               'id', 'title', 'content', 'author', 'created');
-
           });
+          resPost = res.body[0];
+          return BlogPost.findById(resPost.id);
+        })
+        .then(function(post) {
+          console.log(post);
+          console.log(resPost);
+
+          resPost.id.should.equal(post.id);
+          resPost.author.should.contain(post.author.lastName && post.author.firstName);
+          resPost.content.should.equal(post.content);
+        //   resPost.created.should.equal(post.created);
         });
     });
   });
 });
 
-
+//AssertionError: expected '
+// Rosalyn Farrell' to include { lastName: 'Farrell', firstName: 'Rosalyn' }
 
