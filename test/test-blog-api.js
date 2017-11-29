@@ -32,7 +32,7 @@ function generateBlogPostData() {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName()
     },
-    created: Date.now()
+    created: faker.date.recent()
   };
 }
 
@@ -104,12 +104,86 @@ describe('Blog Posts API resource', function() {
           resPost.id.should.equal(post.id);
           resPost.author.should.contain(post.author.lastName && post.author.firstName);
           resPost.content.should.equal(post.content);
-        //   resPost.created.should.equal(post.created);
+        //   resPost.created.should.equal(post.created)
+        });
+    });
+  });
+
+  describe('POST endpoint', function() {
+
+    it('should create a new blog post', function() {
+
+      const newPost = generateBlogPostData();
+
+      return chai.request(app)
+        .post('/posts')
+        .send(newPost)
+        .then(function(res) {
+          res.should.have.status(201);
+          res.should.be.json;
+          res.body.should.be.a('object');
+          res.body.should.include.keys(
+            'id', 'author', 'content', 'title', 'created'
+          );
+          res.body.id.should.not.be.null;
+          res.body.author.should.equal(newPost.author.firstName + ' ' + newPost.author.lastName);
+          res.body.content.should.equal(newPost.content);
+          //   res.body.created.should.equal(newPost.created);
+          return BlogPost.findById(res.body.id);
+        })
+        .then(function(post){
+          post.title.should.equal(newPost.title);
+          post.content.should.equal(newPost.content);
+          post.author.firstName.should.equal(newPost.author.firstName);
+          post.author.lastName.should.equal(newPost.author.lastName);
+        });
+    });
+  });
+  it('should update fields you send over', function() {
+    const updateData = {
+      title: 'foobarbizzbang',
+      content: 'foobarbizzbang foo foo foo foo bar bar'
+    };
+
+    return BlogPost
+      .findOne()
+      .then(function(post) {
+        updateData.id = post.id;
+
+        return chai.request(app)
+          .put(`/posts/${post.id}`)
+          .send(updateData);
+      })
+      .then(function(res) {
+        res.should.have.status(204);
+
+        return BlogPost.findById(updateData.id);
+      })
+      .then(function(post) {
+        post.title.should.equal(updateData.title);
+        post.content.should.equal(updateData.content);
+      });
+  });
+
+  describe('DELETE endpoint', function() {
+    it('should delete a blog post by id', function() {
+
+      let post;
+
+      return BlogPost
+        .findOne()
+        .then(function(_post){
+          post = _post;
+          return chai.request(app).delete(`/posts/${post.id}`);
+        })
+        .then(function(res) {
+          res.should.have.status(204);
+          return BlogPost.findById(post.id);
+        })
+        .then(function(_post) {
+          should.not.exist(_post);
         });
     });
   });
 });
-
-//AssertionError: expected '
-// Rosalyn Farrell' to include { lastName: 'Farrell', firstName: 'Rosalyn' }
 
