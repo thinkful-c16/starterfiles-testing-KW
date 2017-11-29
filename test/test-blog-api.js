@@ -4,6 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const should = chai.should();
 
@@ -98,13 +99,15 @@ describe('Blog Posts API resource', function() {
           return BlogPost.findById(resPost.id);
         })
         .then(function(post) {
-          console.log(post);
-          console.log(resPost);
+          console.log(post.created);
+          console.log(resPost.created);          
 
           resPost.id.should.equal(post.id);
           resPost.author.should.contain(post.author.lastName && post.author.firstName);
           resPost.content.should.equal(post.content);
-        //   resPost.created.should.equal(post.created)
+        //   resPost.created.should.equal(post.created);
+
+        //   resPost.created.should.equal(moment(post.created, moment.ISO_8601)._i);
         });
     });
   });
