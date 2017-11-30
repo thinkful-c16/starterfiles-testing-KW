@@ -99,12 +99,15 @@ describe('Blog Posts API resource', function() {
           return BlogPost.findById(resPost.id);
         })
         .then(function(post) {
-          console.log(post.created);
-          console.log(resPost.created);          
+        //   console.log(post.created);
+        //   console.log(resPost.created); 
+          console.log(resPost.created.toString());
+          console.log(post.created.toString());         
 
           resPost.id.should.equal(post.id);
           resPost.author.should.contain(post.author.lastName && post.author.firstName);
           resPost.content.should.equal(post.content);
+          moment(resPost.created,moment.ISO_8601).toString().should.equal(moment(post.created,moment.ISO_8601).toString());
         //   resPost.created.should.equal(post.created);
 
         //   resPost.created.should.equal(moment(post.created, moment.ISO_8601)._i);
