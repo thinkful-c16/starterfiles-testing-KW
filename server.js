@@ -187,12 +187,12 @@ app.post('/users', (req, res) => {
 const localAuth = passport.authenticate('local', {session: false});
 
 app.post('/login', localAuth, (req, res) => {
-  console.log(req.params);
-  return User.findById(req.params.id)
+  console.log(req.user.id);
+  return User.findById(req.user.id)
     .then(user => res.json(user.apiRepr()))
     .catch(err => {
       console.log(err);
-      res.status(500).json({message: 'Internal server error'})
+      res.status(500).json({message: 'Internal server error'});
     });
 });
 
