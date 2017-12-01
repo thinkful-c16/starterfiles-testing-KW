@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
-const moment = require('moment');
+// const moment = require('moment');
 
 const should = chai.should();
 
@@ -141,51 +141,51 @@ describe('Blog Posts API resource', function() {
   //       });
   //   });
   // });
-  it('should update fields you send over', function() {
-    const updateData = {
-      title: 'foobarbizzbang',
-      content: 'foobarbizzbang foo foo foo foo bar bar'
-    };
+  // it('should update fields you send over', function() {
+  //   const updateData = {
+  //     title: 'foobarbizzbang',
+  //     content: 'foobarbizzbang foo foo foo foo bar bar'
+  //   };
 
-    return BlogPost
-      .findOne()
-      .then(function(post) {
-        updateData.id = post.id;
+  //   return BlogPost
+  //     .findOne()
+  //     .then(function(post) {
+  //       updateData.id = post.id;
 
-        return chai.request(app)
-          .put(`/posts/${post.id}`)
-          .send(updateData);
-      })
-      .then(function(res) {
-        res.should.have.status(204);
+  //       return chai.request(app)
+  //         .put(`/posts/${post.id}`)
+  //         .send(updateData);
+  //     })
+  //     .then(function(res) {
+  //       res.should.have.status(204);
 
-        return BlogPost.findById(updateData.id);
-      })
-      .then(function(post) {
-        post.title.should.equal(updateData.title);
-        post.content.should.equal(updateData.content);
-      });
-  });
+  //       return BlogPost.findById(updateData.id);
+  //     })
+  //     .then(function(post) {
+  //       post.title.should.equal(updateData.title);
+  //       post.content.should.equal(updateData.content);
+  //     });
+  // });
 
-  describe('DELETE endpoint', function() {
-    it('should delete a blog post by id', function() {
+  // describe('DELETE endpoint', function() {
+  //   it('should delete a blog post by id', function() {
 
-      let post;
+  //     let post;
 
-      return BlogPost
-        .findOne()
-        .then(function(_post){
-          post = _post;
-          return chai.request(app).delete(`/posts/${post.id}`);
-        })
-        .then(function(res) {
-          res.should.have.status(204);
-          return BlogPost.findById(post.id);
-        })
-        .then(function(_post) {
-          should.not.exist(_post);
-        });
-    });
-  });
+  //     return BlogPost
+  //       .findOne()
+  //       .then(function(_post){
+  //         post = _post;
+  //         return chai.request(app).delete(`/posts/${post.id}`);
+  //       })
+  //       .then(function(res) {
+  //         res.should.have.status(204);
+  //         return BlogPost.findById(post.id);
+  //       })
+  //       .then(function(_post) {
+  //         should.not.exist(_post);
+  //       });
+  //   });
+  // });
 });
 
