@@ -57,7 +57,10 @@ const localStrategy = new LocalStrategy((username, password, done) => {
 
 passport.use(localStrategy);
 
-app.get('/posts', (req, res) => {
+const localAuth = passport.authenticate('local', {session: false});
+
+
+app.get('/posts',  (req, res) => {
   BlogPost
     .find()
     .then(posts => {
@@ -79,8 +82,9 @@ app.get('/posts/:id', (req, res) => {
     });
 });
 
-app.post('/posts', (req, res) => {
-  const requiredFields = ['title', 'content', 'author'];
+app.post('/posts', localAuth, (req, res) => {
+  console.log(req.user)
+  const requiredFields = ['username', 'title', 'content'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -89,12 +93,14 @@ app.post('/posts', (req, res) => {
       return res.status(400).send(message);
     }
   }
+ 
+  const authorName = req.user.firstName + req.user.lastName;
 
   BlogPost
     .create({
       title: req.body.title,
       content: req.body.content,
-      author: req.body.author
+      author: authorName
     })
     .then(blogPost => res.status(201).json(blogPost.apiRepr()))
     .catch(err => {
@@ -104,6 +110,8 @@ app.post('/posts', (req, res) => {
 
 });
 
+//authenticate the any current users
+//create new accounts
 app.post('/users', (req, res) => {
 
   const requiredFields = ['username', 'password'];
@@ -184,10 +192,8 @@ app.post('/users', (req, res) => {
 
 });
 
-const localAuth = passport.authenticate('local', {session: false});
-
 app.post('/login', localAuth, (req, res) => {
-  console.log(req.user.id);
+  // console.log(req.user.id);
   return User.findById(req.user.id)
     .then(user => res.json(user.apiRepr()))
     .catch(err => {
@@ -195,7 +201,6 @@ app.post('/login', localAuth, (req, res) => {
       res.status(500).json({message: 'Internal server error'});
     });
 });
-
 
 app.delete('/posts/:id', (req, res) => {
   BlogPost

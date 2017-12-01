@@ -4,8 +4,7 @@
   "description": "Shopping list app to demo 'the modern classic'",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "mocha"
+    "start": "node server.js"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",
