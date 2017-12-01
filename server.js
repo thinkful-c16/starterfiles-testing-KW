@@ -82,8 +82,9 @@ app.get('/posts/:id', (req, res) => {
     });
 });
 
-app.post('/posts', localAuth, (req, res) => {
-  console.log(req.user)
+//removed middleware for now to test
+app.post('/posts', (req, res) => {
+  // console.log(req.user)
   const requiredFields = ['username', 'title', 'content'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
@@ -94,7 +95,7 @@ app.post('/posts', localAuth, (req, res) => {
     }
   }
  
-  const authorName = req.user.firstName + req.user.lastName;
+  // const authorName = req.user.firstName + req.user.lastName;
 
   BlogPost
     .create({
@@ -111,7 +112,7 @@ app.post('/posts', localAuth, (req, res) => {
 });
 
 //authenticate the any current users
-//create new accounts
+//create new
 app.post('/users', (req, res) => {
 
   const requiredFields = ['username', 'password'];
